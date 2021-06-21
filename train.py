@@ -68,7 +68,7 @@ def parse_args():
         '-a',
         '--alpha',
         type=float,
-        help='Alpha for balance KLD loss / RC Loss',
+        help='Alpha for balance KLD loss / RC Loss (VAE only)',
         dest='alpha',
         default=1000
 
