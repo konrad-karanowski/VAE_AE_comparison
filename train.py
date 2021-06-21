@@ -81,7 +81,7 @@ def main():
     torch.manual_seed(args.seed)
     if args.kind == 'ae':
         autoencoder = Autoencoder(args.z_size)
-        model = LitAutoencoder(autoencoder)
+        model = LitAutoencoder(autoencoder, lr=args.lr)
     elif args.kind == 'vae':
         autoencoder = VariationalAutoencoder(args.z_size)
         model = LitVariationalAutoencoder(autoencoder, alpha=args.alpha, lr=args.lr)

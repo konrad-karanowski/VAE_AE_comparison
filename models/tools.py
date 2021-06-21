@@ -150,9 +150,9 @@ class VariationalAutoencoder(nn.Module):
         return self._decoder(latent), mi, log_var
 
     @property
-    def encoder(self):
+    def encoder(self) -> nn.Module:
         return self._encoder
 
     @property
-    def decoder(self):
+    def decoder(self) -> nn.Module:
         return self._decoder

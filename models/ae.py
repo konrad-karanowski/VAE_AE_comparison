@@ -5,8 +5,9 @@ import pytorch_lightning as pl
 
 class LitAutoencoder(pl.LightningModule):
 
-    def __init__(self, autoencoder: nn.Module, criterion: nn.Module = nn.MSELoss()):
+    def __init__(self, autoencoder: nn.Module, criterion: nn.Module = nn.MSELoss(), lr: float = 1e-4):
         super(LitAutoencoder, self).__init__()
+        self._lr = lr
         self._autoencoder = autoencoder
         self._criterion = criterion
 
@@ -28,7 +29,7 @@ class LitAutoencoder(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=1e-4)
+        return torch.optim.Adam(self.parameters(), lr=self._lr)
 
     @property
     def autoencoder(self):

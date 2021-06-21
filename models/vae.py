@@ -1,11 +1,8 @@
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
-
 from models import VariationalAutoencoder
-from dataset import get_datasets
 
 
 class VAELoss(nn.Module):
@@ -37,7 +34,7 @@ class LitVariationalAutoencoder(pl.LightningModule):
         out, mi, log_var = self._autoencoder(x)
         loss, base_loss, kl_loss = self._criterion(out, x, mi, log_var)
         self.log('train_loss', loss)
-        self.log('train_base_loss', base_loss)
+        self.log('train_reconstruction_loss', base_loss)
         self.log('train_kl_loss', kl_loss)
         return loss
 
@@ -46,7 +43,7 @@ class LitVariationalAutoencoder(pl.LightningModule):
         out, mi, log_var = self._autoencoder(x)
         loss, base_loss, kl_loss = self._criterion(out, x, mi, log_var)
         self.log('val_loss', loss)
-        self.log('val_base_loss', base_loss)
+        self.log('val_reconstruction_loss', base_loss)
         self.log('val_kl_loss', kl_loss)
         return loss
 
@@ -54,23 +51,5 @@ class LitVariationalAutoencoder(pl.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=self._lr)
 
     @property
-    def autoencoder(self):
+    def autoencoder(self) -> nn.Module:
         return self._autoencoder
-
-
-def train_vae(
-        train_data: DataLoader,
-        val_data: DataLoader,
-        alpha: float,
-        lr: float,
-        z_size: float,
-        max_epochs: int,
-
-
-):
-    autoencoder = VariationalAutoencoder(z_size)
-    model = LitVariationalAutoencoder(autoencoder)
-    trainer = pl.Trainer(
-        callbacks=[pl.callbacks.EarlyStopping('val_loss')]
-    )
-    trainer.fit(model, train_data, val_data)
